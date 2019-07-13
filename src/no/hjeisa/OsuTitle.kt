@@ -1,8 +1,11 @@
+package no.hjeisa
+
 import java.lang.IllegalArgumentException
 import java.util.*
 
-val osuEditorTitleFormat: Regex = Regex("^osu! {2}- ([^-]*) - ([^\\(]*) \\(([^\\)]*)\\) \\[(.*)\\]\\.osu$")
-val osuTitleFormat: Regex = Regex("^osu! {2}- ([^-]*) - ([^\\[]*) \\[(.*)\\]\\$")
+// group 1: version number (' ' for stable, heh)
+val osuEditorTitleFormat: Regex = Regex("^osu!([^-]*) - ([^-]*) - ([^\\(]*) \\(([^\\)]*)\\) \\[(.*)\\]\\.osu$")
+val osuTitleFormat: Regex = Regex("^osu!([^-]*) - ([^-]*) - ([^\\[]*) \\[(.*)\\]$")
 
 class OsuTitle(osuTitle: String) {
     private val artistName: String?
@@ -18,18 +21,18 @@ class OsuTitle(osuTitle: String) {
 
         val editorMatch: MatchResult? = osuEditorTitleFormat.matchEntire(osuTitle)
         if (editorMatch != null) {
-            artistName = editorMatch.groupValues[1]
-            songName   = editorMatch.groupValues[2]
-            mapperName = editorMatch.groupValues[3]
-            diffName   = editorMatch.groupValues[4]
+            artistName = editorMatch.groupValues[2]
+            songName   = editorMatch.groupValues[3]
+            mapperName = editorMatch.groupValues[4]
+            diffName   = editorMatch.groupValues[5]
             isInEditor = true
         }
         else {
             val playingMatch: MatchResult? = osuTitleFormat.matchEntire(osuTitle)
             if (playingMatch != null) {
-                artistName = playingMatch.groupValues[1]
-                songName   = playingMatch.groupValues[2]
-                diffName   = playingMatch.groupValues[3]
+                artistName = playingMatch.groupValues[2]
+                songName   = playingMatch.groupValues[3]
+                diffName   = playingMatch.groupValues[4]
                 mapperName = null
                 isInEditor = false
             }

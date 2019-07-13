@@ -1,3 +1,5 @@
+package no.hjeisa
+
 import java.io.*
 
 const val UPDATE_PERIOD_MS = 1000L
@@ -67,7 +69,7 @@ class OsuMonitorTask(val statusFileDirectoryPath: String) : Runnable {
         }
     }
 
-    private fun fetchOsuTitle(): OsuTitle? {
+    fun fetchOsuTitle(): OsuTitle? {
         if (knownOsuPid < 0) {
             val process = Runtime.getRuntime().exec("tasklist /FI \"imagename eq osu!.exe\" /FO list /V")
             val pidString = readTasklist(process, "PID:")
@@ -82,7 +84,7 @@ class OsuMonitorTask(val statusFileDirectoryPath: String) : Runnable {
         return OsuTitle(titleString!!)
     }
 
-    private fun readTasklist(process: Process, prefix: String): String? {
+    fun readTasklist(process: Process, prefix: String): String? {
         val reader = BufferedReader(InputStreamReader(process.inputStream))
         var result: String? = null
         reader.forEachLine {
@@ -92,4 +94,9 @@ class OsuMonitorTask(val statusFileDirectoryPath: String) : Runnable {
         reader.close()
         return result
     }
+}
+
+fun main() {
+    val nowPlaying = OsuMonitorTask(".").fetchOsuTitle()
+    println(nowPlaying)
 }

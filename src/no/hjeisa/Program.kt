@@ -1,8 +1,8 @@
-import java.io.*
+package no.hjeisa
+
 import java.util.*
 import java.util.concurrent.Executors
 import javax.swing.JFileChooser
-import kotlin.NoSuchElementException
 import kotlin.system.exitProcess
 
 val config = Configuration()
@@ -26,6 +26,7 @@ fun main() {
     }
 
     config.lastPathUsed = filePicker.selectedFile.absolutePath
+    config.saveConfig()
 
     // start polling task
     task = OsuMonitorTask(filePicker.selectedFile.absolutePath)
@@ -70,8 +71,7 @@ fun runInputLoop(input: Scanner): Boolean {
                     | - nat: displays currently attempted map.
                     | - np: displays currently playing map title.
                     | - owo: secret command.
-                    | - exit: quits program, and shuts down monitor thread.
-                    |""".trimMargin())
+                    | - exit: quits program, and shuts down monitor thread.""".trimMargin())
             }
             "exit" -> {
                 return true;

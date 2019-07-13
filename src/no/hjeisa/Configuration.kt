@@ -1,3 +1,5 @@
+package no.hjeisa
+
 import java.io.File
 import java.io.PrintWriter
 
@@ -11,9 +13,11 @@ class Configuration() {
     }
 
     fun loadConfig(configPath: String = CONFIG_PATH) {
-        println("Loading configuration from $CONFIG_PATH.")
         val configFile = File(configPath)
-        configFile.createNewFile()
+        if (configFile.createNewFile())
+            println("Created configuration file at $CONFIG_PATH.")
+        else
+            println("Loading configuration from $CONFIG_PATH.")
 
         val configMap = HashMap<String, String>()
         configFile.forEachLine {
