@@ -1,0 +1,9 @@
+#IntelliJ specific ignores
+.idea/
+*.iml
+
+#Build ignores
+out/
+
+#Project specific ignores
+osuPracticeConf.txt
