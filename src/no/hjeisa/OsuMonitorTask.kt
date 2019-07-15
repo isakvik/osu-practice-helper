@@ -34,7 +34,7 @@ class OsuMonitorTask(val statusFileDirectoryPath: String) : Runnable {
     override fun run() {
         try {
             // task can be force closed by command input thread
-            while (true) {
+            while (!Thread.interrupted()) {
                 val osuTitle = fetchOsuTitle()
                 if (osuTitle != previousOsuTitle) {
                     previousOsuTitle = osuTitle
@@ -42,11 +42,11 @@ class OsuMonitorTask(val statusFileDirectoryPath: String) : Runnable {
                 }
 
                 // TODO: FIND THE DELAY FUNCTION REEEEEE
-                // (UPDATE_PERIOD_MS)
+                Thread.sleep(UPDATE_PERIOD_MS)
             }
         }
         catch (nsee: NoSuchElementException) {
-            println("osu! closed - shutting down. Input anything to save configuration and exit...")
+            println("osu! closed - shutting down polling thread.")
         }
         catch (e: Exception) {
             println("Unhandled exception occurred.")

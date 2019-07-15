@@ -9,7 +9,8 @@ val config = Configuration()
 var knownOsuPid: Int = -1
 
 val executor = Executors.newFixedThreadPool(1)
-var task: OsuMonitorTask? = null
+var monitorTask: OsuMonitorTask? = null
+
 
 fun main() {
     // use property as default
@@ -29,54 +30,65 @@ fun main() {
     config.saveConfig()
 
     // start polling task
-    task = OsuMonitorTask(filePicker.selectedFile.absolutePath)
-    executor.submit(task!!)
+    monitorTask = OsuMonitorTask(filePicker.selectedFile.absolutePath)
+    executor.submit(monitorTask!!)
     executor.shutdown()
 
     // console input loop
     println("osu! practice helper ready. Type '?' for help.")
     var exit = false
-    val input = Scanner(System.`in`)
+    val systemIn = Scanner(System.`in`)
     while (!exit) {
-        exit = runInputLoop(input);
+        exit = runInputLoop(systemIn);
     }
 
     config.saveConfig()
 }
 
-fun runInputLoop(input: Scanner): Boolean {
-    if (input.hasNextLine()) {
+val commandHelp = "?"
+val commandSet = "set"
+val commandNowAttempting = "nat"
+val commandNowPlaying = "np"
+val commandOwo = "owo"
+val commandExit = mapOf("exit" to "exit", "quit" to "quit", ":q" to ":q")
+
+fun runInputLoop(scanner: Scanner): Boolean {
+    if (scanner.hasNextLine()) {
         if (executor.isTerminated) {
             println("polling thread closed.")
-            return true;
+            return true
         }
 
-        when (input.nextLine()) {
-            "run" -> {
-                task?.updateAttemptedMap()
+        when (val next = scanner.nextLine()) {
+            "set" -> {
+                monitorTask?.updateAttemptedMap()
             }
             "nat" -> {
-                println(task?.attemptedMap?.toString() ?: "no map set.")
+                println(monitorTask?.attemptedMap?.toString() ?: "no map set.")
             }
             "np" -> {
-                println(task?.getOsuTitle() ?: "couldn't fetch osu! title...")
+                println(monitorTask?.getOsuTitle() ?: "couldn't fetch osu! title...")
             }
             "owo" -> {
                 println("what's this?")
             }
             "?" -> {
                 println("""Commands:
-                    | - ?: displays this text.
-                    | - run: picks the map you're grinding. Shows text in attempts.txt when you're playing the chosen map.
-                    | - nat: displays currently attempted map.
-                    | - np: displays currently playing map title.
-                    | - owo: secret command.
-                    | - exit: quits program, and shuts down monitor thread.""".trimMargin())
+                    | - $commandHelp: displays this text.
+                    | - $commandSet: picks the map you're grinding. Shows text in attempts.txt when you're playing the chosen map.
+                    | - $commandNowAttempting: displays currently attempted map.
+                    | - $commandNowPlaying: displays currently playing map title.
+                    | - $commandOwo: secret command.
+                    | - ${commandExit.values.first()}: quits program, and shuts down monitor thread.""".trimMargin())
             }
-            "exit" -> {
-                return true;
+            commandExit[next] -> {
+                executor.shutdownNow()
+                return true
+            }
+            else -> {
+                println("Invalid command. Type '$commandHelp' to see list of avaliable commands.")
             }
         }
     }
-    return false;
+    return false
 }
