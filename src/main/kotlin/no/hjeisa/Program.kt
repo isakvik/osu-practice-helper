@@ -35,9 +35,9 @@ fun main() {
     executor.shutdown()
 
     // console input loop
-    println("osu! practice helper ready. Type '?' for help.")
     var exit = false
     val systemIn = Scanner(System.`in`)
+    println("osu! practice helper ready. Type '?' for help.")
     while (!exit) {
         exit = runInputLoop(systemIn);
     }
@@ -53,12 +53,7 @@ val commandOwo = "owo"
 val commandExit = mapOf("exit" to "exit", "quit" to "quit", ":q" to ":q")
 
 fun runInputLoop(scanner: Scanner): Boolean {
-    if (scanner.hasNextLine()) {
-        if (executor.isTerminated) {
-            println("polling thread closed.")
-            return true
-        }
-
+    if (scanner.hasNext()) {
         when (val next = scanner.nextLine()) {
             "set" -> {
                 monitorTask?.updateAttemptedMap()
@@ -89,6 +84,10 @@ fun runInputLoop(scanner: Scanner): Boolean {
                 println("Invalid command. Type '$commandHelp' to see list of avaliable commands.")
             }
         }
+    }
+    if (executor.isTerminated) {
+        println("polling thread closed - exiting.")
+        return true
     }
     return false
 }

@@ -3,7 +3,8 @@
 *.iml
 
 #Build ignores
-out/
+.gradle/
+build/
 
 #Project specific ignores
 osuPracticeConf.txt

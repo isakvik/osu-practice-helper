@@ -46,7 +46,7 @@ class OsuMonitorTask(val statusFileDirectoryPath: String) : Runnable {
             }
         }
         catch (nsee: NoSuchElementException) {
-            println("osu! closed - shutting down polling thread.")
+            println("osu! closed; shutting down polling thread.")
         }
         catch (e: Exception) {
             println("Unhandled exception occurred.")
@@ -80,8 +80,9 @@ class OsuMonitorTask(val statusFileDirectoryPath: String) : Runnable {
 
         val process = Runtime.getRuntime().exec("tasklist /FI \"pid eq $knownOsuPid\" /FO list /V")
         val titleString = readTasklist(process, "Window Title: ")
+            ?: throw NoSuchElementException("osu! has not been started.")
 
-        return OsuTitle(titleString!!)
+        return OsuTitle(titleString)
     }
 
     fun readTasklist(process: Process, prefix: String): String? {
