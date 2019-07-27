@@ -39,12 +39,12 @@ class Configuration {
         lastPathUsed = configMap["lastPathUsed"]
         logFilePath = configMap["logFilePath"]
 
-        idleStatusMessage       = configMap["idleStatusMessage"]
-        practicingStatusMessage = configMap["practicingStatusMessage"]
-        attemptingStatusMessage = configMap["attemptingStatusMessage"]
-        studyingStatusMessage   = configMap["studyingStatusMessage"]
-        otherStatusMessage      = configMap["otherStatusMessage"]
-        fcStatusMessage         = configMap["fcStatusMessage"]
+        idleStatusMessage       = configMap["idleStatusMessage"]       ?: "Idle"
+        practicingStatusMessage = configMap["practicingStatusMessage"] ?: "Practicing"
+        attemptingStatusMessage = configMap["attemptingStatusMessage"] ?: "Doing runs"
+        studyingStatusMessage   = configMap["studyingStatusMessage"]   ?: "Studying"
+        otherStatusMessage      = configMap["otherStatusMessage"]      ?: "Playing something else"
+        fcStatusMessage         = configMap["fcStatusMessage"]         ?: "check reddit"
     }
 
     fun saveConfig() {
