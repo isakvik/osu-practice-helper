@@ -53,6 +53,7 @@ val commandOwo = "owo"
 val commandExit = mapOf("exit" to "exit", "quit" to "quit", ":q" to ":q")
 
 fun runInputLoop(scanner: Scanner): Boolean {
+    print("> ")
     if (scanner.hasNext()) {
         when (val next = scanner.nextLine()) {
             "set" -> {
@@ -87,7 +88,7 @@ fun runInputLoop(scanner: Scanner): Boolean {
         }
     }
     if (executor.isTerminated) {
-        println("polling thread closed - exiting.")
+        println("\npolling thread closed - exiting.")
         return true
     }
     return false

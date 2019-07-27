@@ -58,13 +58,13 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
             }
         }
         catch (nsee: NoSuchElementException) {
-            println("osu! closed; shutting down polling thread.")
+            println("\nosu! closed; shutting down polling thread.")
         }
         catch (ie: InterruptedException) {
-            println("practice helper closed; shutting down polling thread.")
+            println("\npractice helper closed; shutting down polling thread.")
         }
         catch (e: Exception) {
-            println("unhandled exception occurred.")
+            println("\nunhandled exception occurred.")
             e.printStackTrace()
         }
         finally {
