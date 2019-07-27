@@ -5,6 +5,7 @@
 #Build ignores
 .gradle/
 build/
+out/
 
 #Project specific ignores
 osuPracticeConf.txt
