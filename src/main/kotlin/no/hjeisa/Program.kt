@@ -3,7 +3,6 @@ package no.hjeisa
 import java.util.*
 import java.util.concurrent.Executors
 import javax.swing.JFileChooser
-import kotlin.system.exitProcess
 
 val config = Configuration()
 var knownOsuPid: Int = -1
@@ -13,17 +12,23 @@ var monitorTask: OsuMonitorTask? = null
 
 
 fun main() {
+    config.loadConfig()
+    run()
+    config.saveConfig()
+}
+
+fun run() {
     // use property as default
     val defaultDirectory = config.lastPathUsed ?: System.getProperty("user.home")
-
     val filePicker = JFileChooser(defaultDirectory)
+
     filePicker.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY)
     filePicker.setDialogTitle("Choose directory to write status files into...")
     filePicker.setAcceptAllFileFilterUsed(false)
     val fpVal = filePicker.showOpenDialog(null)
     if (fpVal != JFileChooser.APPROVE_OPTION) {
         println("No directory chosen, exiting.")
-        exitProcess(0)
+        return
     }
 
     config.lastPathUsed = filePicker.selectedFile.absolutePath
@@ -41,8 +46,6 @@ fun main() {
     while (!exit) {
         exit = runInputLoop(systemIn)
     }
-
-    config.saveConfig()
 }
 
 val commandHelp = "?"

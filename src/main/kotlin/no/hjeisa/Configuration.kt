@@ -19,10 +19,6 @@ class Configuration {
     var otherStatusMessage: String? = null
     var fcStatusMessage: String? = null
 
-    init {
-        loadConfig()
-    }
-
     fun loadConfig(configPath: String = CONFIG_PATH) {
         val configFile = File(configPath)
         if (configFile.createNewFile())
