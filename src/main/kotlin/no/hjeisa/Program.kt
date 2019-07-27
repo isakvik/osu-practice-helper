@@ -17,9 +17,9 @@ fun main() {
     val defaultDirectory = config.lastPathUsed ?: System.getProperty("user.home")
 
     val filePicker = JFileChooser(defaultDirectory)
-    filePicker.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    filePicker.setDialogTitle("Choose directory to write status files into...");
-    filePicker.setAcceptAllFileFilterUsed(false);
+    filePicker.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY)
+    filePicker.setDialogTitle("Choose directory to write status files into...")
+    filePicker.setAcceptAllFileFilterUsed(false)
     val fpVal = filePicker.showOpenDialog(null)
     if (fpVal != JFileChooser.APPROVE_OPTION) {
         println("No directory chosen, exiting.")
@@ -39,7 +39,7 @@ fun main() {
     val systemIn = Scanner(System.`in`)
     println("osu! practice helper ready. Type '?' for help.")
     while (!exit) {
-        exit = runInputLoop(systemIn);
+        exit = runInputLoop(systemIn)
     }
 
     config.saveConfig()
@@ -57,6 +57,7 @@ fun runInputLoop(scanner: Scanner): Boolean {
         when (val next = scanner.nextLine()) {
             "set" -> {
                 monitorTask?.updateAttemptedMap()
+                println("set map: " + monitorTask?.attemptedMap?.toString())
             }
             "nat" -> {
                 println(monitorTask?.attemptedMap?.toString() ?: "no map set.")

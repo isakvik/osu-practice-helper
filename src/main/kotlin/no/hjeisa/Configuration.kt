@@ -5,8 +5,19 @@ import java.io.PrintWriter
 
 const val CONFIG_PATH = "./osuPracticeConf.txt"
 
-class Configuration() {
+class Configuration {
+
+    private val configMap = HashMap<String, String>()
+
     var lastPathUsed: String? = null
+    var logFilePath: String? = null // UNUSED
+
+    var idleStatusMessage: String? = null
+    var practicingStatusMessage: String? = null
+    var attemptingStatusMessage: String? = null
+    var studyingStatusMessage: String? = null
+    var otherStatusMessage: String? = null
+    var fcStatusMessage: String? = null
 
     init {
         loadConfig()
@@ -19,21 +30,30 @@ class Configuration() {
         else
             println("Loading configuration from $CONFIG_PATH.")
 
-        val configMap = HashMap<String, String>()
         configFile.forEachLine {
-            val configLine = it.split(Regex("="), 2)
+            val configLine = it.split(Regex(" ?= ?"), 2)
             if (configLine.size == 2)
-                configMap[configLine[0]] = configLine[1];
+                configMap[configLine[0]] = configLine[1]
         }
 
         lastPathUsed = configMap["lastPathUsed"]
+        logFilePath = configMap["logFilePath"]
+
+        idleStatusMessage       = configMap["idleStatusMessage"]
+        practicingStatusMessage = configMap["practicingStatusMessage"]
+        attemptingStatusMessage = configMap["attemptingStatusMessage"]
+        studyingStatusMessage   = configMap["studyingStatusMessage"]
+        otherStatusMessage      = configMap["otherStatusMessage"]
+        fcStatusMessage         = configMap["fcStatusMessage"]
     }
 
     fun saveConfig() {
         val configFile = File(CONFIG_PATH)
         val out = PrintWriter(configFile)
 
-        out.write("lastPathUsed=$lastPathUsed")
+        for (config in configMap) {
+            out.write("${config.key}=${config.value}\n")
+        }
         println("Configuration saved to $CONFIG_PATH.")
         out.close()
     }

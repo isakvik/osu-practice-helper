@@ -1,5 +1,6 @@
 package no.hjeisa
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -46,10 +47,19 @@ class OsuTitle(osuTitle: String) {
         }
     }
 
-    fun isPracticeDiff(map: OsuTitle): Boolean {
+    fun isPracticeDiffOf(map: OsuTitle?): Boolean {
+        if (map == null) return false;
         return this.artistName.equals(map.artistName)
                 && this.songName.equals(map.songName)
                 && !this.diffName.equals(map.diffName)
+    }
+
+    /**
+     * also returns true if the player is editing a practice difficulty of the currently attempted map
+     */
+    fun isEditing(attemptedMap: OsuTitle?): Boolean {
+        return if (attemptedMap == null) isInEditor
+            else isInEditor && (this == attemptedMap || isPracticeDiffOf(attemptedMap))
     }
 
     override fun toString(): String {
@@ -67,7 +77,6 @@ class OsuTitle(osuTitle: String) {
         return Objects.equals(this.artistName, other.artistName)
                 && Objects.equals(this.songName, other.songName)
                 && Objects.equals(this.diffName, other.diffName)
-                && Objects.equals(this.mapperName, other.mapperName)
     }
 
     override fun hashCode(): Int {
@@ -79,4 +88,8 @@ class OsuTitle(osuTitle: String) {
         return result
     }
 
+    // static fields for equality check
+    companion object {
+        val idle = OsuTitle("osu!")
+    }
 }
