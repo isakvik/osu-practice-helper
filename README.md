@@ -13,5 +13,5 @@ otherStatusMessage=Playing something else
 ```
 
 TODOS:
-Set the configuration path to something alright
-Fetch the FC status (poll the osu api when it changes from doing runs to idle i guess)
+* Set the configuration path to something alright
+* Fetch the FC status (poll the osu api when it changes from doing runs to idle i guess)
