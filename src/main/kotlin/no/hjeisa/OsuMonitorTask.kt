@@ -29,7 +29,7 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
         writeToFile(fcStatusFile, "")
         // write stuff to idle while we wait for map selection
         writeToFile(idleStatusFile, "...")
-        writeToFile(nowPlayingFile, "...")
+        writeToFile(nowPlayingFile, "No map open", false)
     }
 
     fun getOsuTitle(): String? {
@@ -57,8 +57,11 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
                             runFileWriteLoop(osuTitle)
                         }
                     }
-                    // always write current playing map to this file
-                    writeToFile(nowPlayingFile, getOsuTitle())
+                    // write current playing map to this file, but keep last played song until a new one starts
+                    val current = getOsuTitle()
+                    if (current != "No map open") {
+                        writeToFile(nowPlayingFile, current)
+                    }
                 }
                 catch (re: RuntimeException) {
                     println("\nunhandled exception occurred.")
@@ -79,6 +82,7 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
         }
         finally {
             println("shutting down polling thread.")
+            writeToFile(nowPlayingFile, "No map open")
             currentStatusWriter.close()
         }
     }
@@ -105,11 +109,15 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
         }
     }
 
-    // overwrites text in file
+    // overwrites text in file, clears previous file by default
     private fun writeToFile(file: File, content: String?) {
+        writeToFile(file, content, true)
+    }
+
+    private fun writeToFile(file: File, content: String?, clearPreviousFile: Boolean) {
         if (content == null) return
 
-        if (previousFile != null) {
+        if (previousFile != null && clearPreviousFile) {
             currentStatusWriter = FileWriter(previousFile!!)
             currentStatusWriter.write("")
         }
