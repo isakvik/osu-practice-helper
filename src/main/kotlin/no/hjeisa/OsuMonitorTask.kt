@@ -32,14 +32,6 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
         writeToFile(nowPlayingFile, "No map open", false)
     }
 
-    fun getOsuTitle(): String? {
-        return try {
-            previousOsuTitle?.toString() ?: fetchOsuTitle()?.toString()
-        } catch (e: Exception) {
-            "error given: $e.message"
-        }
-    }
-
     fun updateAttemptedMap() {
         attemptedMap = fetchOsuTitle()
         previousOsuTitle = null
@@ -82,7 +74,10 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
         }
         finally {
             println("shutting down polling thread.")
+            // clear files
+            previousFile?.let { writeToFile(it, "") }
             writeToFile(nowPlayingFile, "No map open")
+
             currentStatusWriter.close()
         }
     }
@@ -121,11 +116,22 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
             currentStatusWriter = FileWriter(previousFile!!)
             currentStatusWriter.write("")
         }
-        previousFile = file
+        if (!clearPreviousFile) {
+            previousFile = file
+        }
 
         currentStatusWriter = FileWriter(file)
         currentStatusWriter.use {
             it.write(content)
+        }
+    }
+
+
+    fun getOsuTitle(): String? {
+        return try {
+            previousOsuTitle?.toString() ?: fetchOsuTitle()?.toString()
+        } catch (e: Exception) {
+            "error given: $e.message"
         }
     }
 
