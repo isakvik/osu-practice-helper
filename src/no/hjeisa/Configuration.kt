@@ -3,7 +3,7 @@ package no.hjeisa
 import java.io.File
 import java.io.PrintWriter
 
-const val CONFIG_PATH = "./osuPracticeConf.txt"
+const val CONFIG_PATH = "./osu_practice_conf.txt"
 
 class Configuration {
 

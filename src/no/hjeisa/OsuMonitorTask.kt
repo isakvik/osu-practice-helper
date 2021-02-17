@@ -12,6 +12,7 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
     val studyingStatusFile: File = File("$statusFileDirectoryPath/studying.txt")
     val otherStatusFile: File = File("$statusFileDirectoryPath/other.txt")
     val fcStatusFile: File = File("$statusFileDirectoryPath/fc.txt")
+    val nowPlayingFile: File = File("$statusFileDirectoryPath/now_playing.txt")
 
     var currentStatusWriter: FileWriter = FileWriter(idleStatusFile)
 
@@ -28,6 +29,7 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
         writeToFile(fcStatusFile, "")
         // write stuff to idle while we wait for map selection
         writeToFile(idleStatusFile, "...")
+        writeToFile(nowPlayingFile, "...")
     }
 
     fun getOsuTitle(): String? {
@@ -47,27 +49,36 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
         try {
             // task can be force closed by command input thread
             while (!Thread.interrupted()) {
-                if (attemptedMap != null) {
-                    val osuTitle = fetchOsuTitle()
-                    if (osuTitle != previousOsuTitle) {
-                        previousOsuTitle = osuTitle
-                        runFileWriteLoop(osuTitle)
+                try {
+                    if (attemptedMap != null) {
+                        val osuTitle = fetchOsuTitle()
+                        if (osuTitle != previousOsuTitle) {
+                            previousOsuTitle = osuTitle
+                            runFileWriteLoop(osuTitle)
+                        }
                     }
+                    // always write current playing map to this file
+                    writeToFile(nowPlayingFile, getOsuTitle())
+                }
+                catch (re: RuntimeException) {
+                    println("\nunhandled exception occurred.")
+                    re.printStackTrace()
                 }
                 Thread.sleep(UPDATE_PERIOD_MS)
             }
         }
         catch (nsee: NoSuchElementException) {
-            println("\nosu! closed; shutting down polling thread.")
+            print("\nosu! closed; ")
         }
         catch (ie: InterruptedException) {
-            println("\npractice helper closed; shutting down polling thread.")
+            print("\npractice helper closed; ")
         }
         catch (e: Exception) {
-            println("\nunhandled exception occurred.")
+            println("\nunhandled exception occurred; ")
             e.printStackTrace()
         }
         finally {
+            println("shutting down polling thread.")
             currentStatusWriter.close()
         }
     }
@@ -136,9 +147,4 @@ class OsuMonitorTask(statusFileDirectoryPath: String): Runnable {
         reader.close()
         return result
     }
-}
-
-fun main() {
-    val nowPlaying = OsuMonitorTask(".").fetchOsuTitle()
-    println(nowPlaying)
 }

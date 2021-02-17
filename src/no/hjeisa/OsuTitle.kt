@@ -64,7 +64,7 @@ class OsuTitle(osuTitle: String) {
 
     override fun toString(): String {
         if (artistName == "none" && diffName == "none")
-            return "no map open"
+            return "No map open"
         return "$artistName - $songName [$diffName]" +
                 if (mapperName != null) ", mapset by $mapperName" else {""} +
                 if (isInEditor) " -- editing" else ""

@@ -42,7 +42,7 @@ fun run() {
     // console input loop
     var exit = false
     val systemIn = Scanner(System.`in`)
-    println("osu! practice helper ready. Type '?' for help.")
+    println("osu! practice helper ready. Type '$commandHelp' for help.")
     while (!exit) {
         exit = runInputLoop(systemIn)
     }
@@ -59,20 +59,20 @@ fun runInputLoop(scanner: Scanner): Boolean {
     print("> ")
     if (scanner.hasNext()) {
         when (val next = scanner.nextLine()) {
-            "set" -> {
+            commandSet -> {
                 monitorTask?.updateAttemptedMap()
                 println("set map: " + monitorTask?.attemptedMap?.toString())
             }
-            "nat" -> {
+            commandNowAttempting -> {
                 println(monitorTask?.attemptedMap?.toString() ?: "no map set.")
             }
-            "np" -> {
+            commandNowPlaying -> {
                 println(monitorTask?.getOsuTitle() ?: "couldn't fetch osu! title...")
             }
-            "owo" -> {
+            commandOwo -> {
                 println("what's this?")
             }
-            "?" -> {
+            commandHelp -> {
                 println("""Commands:
                     | - $commandHelp: displays this text.
                     | - $commandSet: picks the map you're grinding. Shows text in attempts.txt when you're playing the chosen map.
